@@ -1,0 +1,18 @@
+{
+  "name": "2024-07_js_final",
+  "version": "1.0.0",
+  "description": "",
+  "main": "game.js",
+  "scripts": {
+    "start": "nodemon --watch game.js --exec qode game.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@nodegui/nodegui": "^0.67.0",
+    "gradient-string": "^2.0.2",
+    "source-map-support": "^0.5.21"
+  }
+}
