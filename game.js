@@ -44,14 +44,20 @@ const hangman = {
         console.log(greeting);
         console.log(`Chose a topic! [${list.join(", ")}]`);
         console.log(topicsStr);
+        this.choseTopic(list);
     },
-    choseTopic(){
-        this.displayTopicsMenu();
+    choseTopic(list){
         let words = [
             ["volleyball", "basketball", "swimming", "handball", "athletics", "football", "hockey", "skating", "golf", "sprint"],
             ["robin","penguin","flamingo","eagle","blackbird","crane","stork","raven","albatross","kingfisher"],
             ["test1","test2","test3"]
-        ]
+        ];
+        let topic = rls.keyIn("> ", {limit: list}).toLowerCase();
+        list.map((listItem, index)=> {
+            if (listItem.toLowerCase() === topic){
+            this.words = words[index];
+            }
+        });
     }
 }
 
@@ -65,7 +71,7 @@ function welcomeUser(){
 }
 
 function startGame(){
-    hangman.choseTopic();
+    hangman.displayTopicsMenu();
     function newRound(){
     }
 }
