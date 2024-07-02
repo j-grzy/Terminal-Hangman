@@ -3,9 +3,42 @@ import gradient from "gradient-string";
 import chalk from "chalk";
 import clear from "console-clear";
 import terminalColumns from "terminal-columns";
+import Table from "cli-table";
 
 const user = {
-    name: ""
+    name: "",
+    stats: [],
+    totalScore : 0,
+    resetStats(){
+        const h = chalk.hex('#FFA500'); // table head styling
+        this.stats = new Table({
+            head: [h("rounds"),h("won"),h("lost"),h("score"),h("bonus"),h("penalty"),h("final score")]
+        });
+        this.totalScore = 0;
+    },
+    saveStats(rounds){
+        const d = chalk.yellowBright; // table data styling
+        let roundCount = rounds.length;
+        let won = rounds.filter((item) => item).length;
+        let lost = rounds.filter((item)=> !item).length;
+        let score = won*10 - lost*10;
+        let bonus = won === roundCount ? 30 : won >= roundCount * 0.8 ? 10 : 0;
+        let penalty = lost === roundCount ? -30 : lost >= roundCount * 0.8 ? -10 : 0;
+        let finalScore = score + bonus + penalty;
+        this.stats.push([d(roundCount),d(won),d(lost),d(score),d(bonus),d(penalty),d.bold(finalScore)]);
+        // lost 100% penalty: -30, lost 80% penalty: 10; won 100% bonus: 30, won 80% bonus 10
+        this.totalScore += finalScore;
+    },
+    displayStats(){
+        clear();
+        console.log(menu.display());
+        console.log(hangman.title);
+        console.log(this.stats.toString());
+        console.log("\n\n"+chalk.yellowBright(center(`Total Score: ${this.totalScore}`,64))+"\n");
+        console.log("\nPress [" + chalk.yellowBright("0") + "] to quit game or [" + chalk.yellowBright("1") + "] to play again.\n");
+        let choice = rls.keyIn("> ", {limit: ["0","1"]});
+        menu.check(choice);
+    }
 };
 const menu = {
     output: [],
@@ -20,6 +53,9 @@ const menu = {
     check(key){
         if (key === "0"){
             process.exit();
+        }
+        if (key === "1"){
+            startGame();
         }
     }
 };
@@ -83,7 +119,7 @@ const hangman = {
         let words = [
             ["volleyball", "basketball", "swimming", "handball", "athletics", "football", "hockey", "skating", "golf", "sprint"],
             ["robin","penguin","flamingo","eagle","blackbird","crane","stork","raven","albatross","kingfisher"],
-            ["test1","test2","test3"]
+            ["test","test","test"]
         ];
         let topic = rls.keyIn("> ", {limit: [...list, "0"]}).toLowerCase();
         menu.check(topic);
@@ -359,6 +395,7 @@ const hangman = {
 function welcomeUser(){
     clear();
     menu.reset();
+    user.resetStats();
     console.log(menu.display());
     console.log(hangman.title);
     console.log(`Welcome!\nWhat's your name?`);
@@ -370,12 +407,15 @@ function welcomeUser(){
 
 function startGame(){
     hangman.reset();
+    menu.reset();
     hangman.displayTopicsMenu();
     function newRound(){
+        menu.reset();
+        menu.output.push([chalk.dim(`[${chalk.yellowBright("1")}] restart game`)]);
         hangman.resetRound();
         hangman.display();
         while (hangman.hiddenW !== hangman.currentW && hangman.counter < 7) {
-            let choice = rls.keyIn("Pick a letter > ", {limit: [...hangman.abc, "0"]});
+            let choice = rls.keyIn("Pick a letter > ", {limit: [...hangman.abc, "0","1"]});
             hangman.checkWord(choice);
             hangman.display();
         }
@@ -389,9 +429,11 @@ function startGame(){
                 hangman.round++;
                 newRound();
             } else {
-                hangman.msg = chalk.green("Congrats!\nYou won this round.\nGames ends now.");
+                hangman.msg = chalk.green("Congrats!\nYou won this round.\nGames ends now.\n\n")+ chalk.white("Press key to see your stats.\n");
                 hangman.display();
-                //press key to see statistics
+                rls.keyInPause("> "); // menu-options??
+                user.saveStats(hangman.rounds);
+                user.displayStats();
             }
         }
         if (hangman.counter >= 7) {
@@ -404,9 +446,11 @@ function startGame(){
                 hangman.round++;
                 newRound();
             } else {
-                hangman.msg = chalk.red(`You lost this round.\nThe word was ${chalk.white(hangman.currentW.toUpperCase())}.\nGame ends now.`);
+                hangman.msg = chalk.red("You lost this round.\nThe word was ${chalk.white(hangman.currentW.toUpperCase())}.\nGame ends now.\n\n")+ chalk.white("Press key to see your stats.\n");
                 hangman.display();
-                //press key to see statistics
+                rls.keyInPause("> "); // menu-options??
+                user.saveStats(hangman.rounds);
+                user.displayStats();
             }
         }
     }
