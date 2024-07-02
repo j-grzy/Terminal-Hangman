@@ -2,6 +2,7 @@ import rls from "readline-sync";
 import gradient from "gradient-string";
 import chalk from "chalk";
 import clear from "console-clear";
+import terminalColumns from "terminal-columns";
 
 const user = {
     name: ""
@@ -9,7 +10,7 @@ const user = {
 const menu = {
     output: [],
     reset(){
-        let quit = [`[${chalk.yellowBright("0")}] quit game`];
+        let quit = [chalk.dim(`[${chalk.yellowBright("0")}] quit game`)];
         this.output = [];
         this.output.push(quit);
     },
@@ -316,14 +317,24 @@ const hangman = {
             ];
             return hangman[this.counter].join("\n");
         };
+        let table;
+        if (this.abc) {
+            table = [[disTopic() + "\n\n" + disRounds() + "\n\n\n" + disHiddenW() + "\n" + disABC(), disHangman()]];
+        } else if (this.msg){
+            table = [[disTopic() + "\n\n"  + disRounds() + "\n\n\n" + disHiddenW() + "\n" + this.msg, disHangman()]];
+        } else table = "";
+        const output = terminalColumns(table, ["content-width", "content-width"]);
+
         clear();
         console.log(menu.display());
         console.log(this.title);
-        console.log(disTopic());
+        console.log(output);
+/*         console.log(disTopic());
         console.log(disRounds());
         console.log(disHiddenW());
         console.log(disABC());
-        console.log(disHangman());
+        console.log(disHangman()); */
+
     },
     checkWord(choice){
         menu.check(choice);
@@ -365,6 +376,36 @@ function startGame(){
             let choice = rls.keyIn("Pick a letter > ", {limit: [...hangman.abc, "0"]});
             hangman.checkWord(choice);
             hangman.display();
+        }
+        if (hangman.hiddenW === hangman.currentW) {
+            hangman.rounds[hangman.round] = true;
+            hangman.abc = false;
+            if (hangman.round < hangman.rounds.length - 1) {
+                hangman.msg = chalk.green("Congrats!\nYou won this round!");
+                hangman.display();
+                rls.keyInPause("Next round > "); // menu-options??
+                hangman.round++;
+                newRound();
+            } else {
+                hangman.msg = chalk.green("Congrats!\nYou won this round.\nGames ends now.");
+                hangman.display();
+                //press key to see statistics
+            }
+        }
+        if (hangman.counter >= 7) {
+            hangman.rounds[hangman.round] = false;
+            hangman.abc = false;
+            if (hangman.round < hangman.rounds.length - 1) {
+                hangman.msg = chalk.red(`You lost this round.\nThe word was ${chalk.white(hangman.currentW.toUpperCase())}.`);
+                hangman.display();
+                rls.keyInPause("Next round > "); // menu-options??
+                hangman.round++;
+                newRound();
+            } else {
+                hangman.msg = chalk.red(`You lost this round.\nThe word was ${chalk.white(hangman.currentW.toUpperCase())}.\nGame ends now.`);
+                hangman.display();
+                //press key to see statistics
+            }
         }
     }
     newRound();
