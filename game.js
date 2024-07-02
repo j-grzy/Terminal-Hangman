@@ -6,7 +6,22 @@ import clear from "console-clear";
 const user = {
     name: ""
 };
-const menu = [""];
+const menu = {
+    output: [],
+    reset(){
+        let quit = [`[${chalk.yellowBright("0")}] quit game`];
+        this.output = [];
+        this.output.push(quit);
+    },
+    display(){
+        return this.output.join(" ");
+    },
+    check(key){
+        if (key === "0"){
+            process.exit();
+        }
+    }
+};
 const titles = {
     hangman: gradient("yellow", "orange", "yellow", "orange", "yellow").multiline(
 `
@@ -54,7 +69,7 @@ const hangman = {
         });
         topicsStr += `╚${"══".repeat(boxWidth/2)}╝`;
         clear();
-        //console.log(menu);
+        console.log(menu.display());
         console.log(this.title);
         console.log(greeting);
         console.log(`Chose a topic! [${list.join(", ")}]`);
@@ -67,7 +82,8 @@ const hangman = {
             ["robin","penguin","flamingo","eagle","blackbird","crane","stork","raven","albatross","kingfisher"],
             ["test1","test2","test3"]
         ];
-        let topic = rls.keyIn("> ", {limit: list}).toLowerCase();
+        let topic = rls.keyIn("> ", {limit: [...list, "0"]}).toLowerCase();
+        menu.check(topic);
         list.map((listItem, index)=> {
             if (listItem.toLowerCase() === topic){
             this.words = words[index];
@@ -301,21 +317,40 @@ const hangman = {
             return hangman[this.counter].join("\n");
         };
         clear();
-        //console.log(menu);
+        console.log(menu.display());
         console.log(this.title);
         console.log(disTopic());
         console.log(disRounds());
         console.log(disHiddenW());
         console.log(disABC());
         console.log(disHangman());
+    },
+    checkWord(choice){
+        menu.check(choice);
+        let index = this.abc.indexOf(choice);
+        this.abc.splice(index, 1, " ");
+        if (this.currentW.includes(choice)){
+            for (let i = 0; i < this.currentW.length; i++) {
+                if (choice === this.currentW[i]) {
+                    this.hiddenW = this.hiddenW.split("");
+                    this.hiddenW.splice(i, 1, choice);
+                    this.hiddenW = this.hiddenW.join("");
+                }
+            }
+        } else {
+            this.counter++;
+        }
     }
 }
 
 function welcomeUser(){
-    //console.log(menu);
+    clear();
+    menu.reset();
+    console.log(menu.display());
     console.log(hangman.title);
     console.log(`Welcome!\nWhat's your name?`);
     let name = rls.question("> ");
+    menu.check(name);
     user.name = name[0].toUpperCase() + name.slice(1).toLowerCase();
     startGame();
 }
@@ -326,6 +361,11 @@ function startGame(){
     function newRound(){
         hangman.resetRound();
         hangman.display();
+        while (hangman.hiddenW !== hangman.currentW && hangman.counter < 7) {
+            let choice = rls.keyIn("Pick a letter > ", {limit: [...hangman.abc, "0"]});
+            hangman.checkWord(choice);
+            hangman.display();
+        }
     }
     newRound();
 }
