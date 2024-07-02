@@ -53,27 +53,29 @@ const hangman = {
         this.rounds = [];
     },
     displayTopicsMenu(){
-        let greeting = `Hello ${user.name}!`
+        let greeting = chalk.yellowBright(center(`Hello ${user.name}!`,64))+"\n";
         let topicsStr = "";
         let listCount = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"];
         let list = [];
-        let boxWidth = 50;
+        let boxWidth = 40;
+        let margin = " ".repeat(Math.floor((64-boxWidth-2) / 2));
         let lwl = this.topics.reduce((acc,str) => acc.length > str.length ? acc : str).length; // length of longest word in list
         let l = Math.floor((boxWidth-lwl-4)/2);
         let paddingLeft = " ".repeat(l);
-        topicsStr = `╔${"══".repeat(boxWidth/2)}╗\n║${" ".repeat(boxWidth)}║\n`;
+        topicsStr = `${margin}╔${"══".repeat(boxWidth/2)}╗\n${margin}║${" ".repeat(boxWidth)}║\n`;
         this.topics.map((topic, index)=>{
             list.push(listCount[index]);
             let r = boxWidth-topic.length-4-l;
-            let paddingRight = " ".repeat(r)
-            topicsStr += `║${paddingLeft}[${chalk.bold.yellowBright(listCount[index])}] ${chalk.white(topic)}${paddingRight}║\n║${" ".repeat(boxWidth)}║\n`;
+            let paddingRight = " ".repeat(r);
+            topicsStr += `${margin}║${paddingLeft}[${chalk.bold.yellowBright(listCount[index])}] ${chalk.white(topic)}${paddingRight}║\n${margin}║${" ".repeat(boxWidth)}║\n`;
         });
-        topicsStr += `╚${"══".repeat(boxWidth/2)}╝`;
+        topicsStr += `${margin}╚${"══".repeat(boxWidth/2)}╝`;
+        let message = chalk.yellowBright(center(`Chose a topic! [${list.join(", ")}]`,64)) + "\n"; // center message; not working with chalk inside/ ANSI-Escape Codes...
         clear();
         console.log(menu.display());
         console.log(this.title);
         console.log(greeting);
-        console.log(`Chose a topic! [${list.join(", ")}]`);
+        console.log(message);
         console.log(topicsStr);
         this.choseTopic(list);
     },
@@ -412,3 +414,10 @@ function startGame(){
 }
 
 welcomeUser();
+
+
+
+function center(str, width){
+    let margin = " ".repeat(Math.floor((width-str.length) / 2));
+    return `${margin}${str}`;
+}
