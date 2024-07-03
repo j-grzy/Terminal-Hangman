@@ -12,12 +12,13 @@ const user = {
     resetStats(){
         const h = chalk.hex('#FFA500'); // table head styling
         this.stats = new Table({
-            head: [h("rounds"),h("won"),h("lost"),h("score"),h("bonus"),h("penalty"),h("final score")]
+            head: [h("topic"),h("rounds"),h("won"),h("lost"),h("score"),h("bonus"),h("penalty"),h("final score")]
         });
         this.totalScore = 0;
     },
     saveStats(rounds){
         const d = chalk.yellowBright; // table data styling
+        let topic = hangman.topic;
         let roundCount = rounds.length;
         let won = rounds.filter((item) => item).length;
         let lost = rounds.filter((item)=> !item).length;
@@ -25,7 +26,7 @@ const user = {
         let bonus = won === roundCount ? 30 : won >= roundCount * 0.8 ? 10 : 0;
         let penalty = lost === roundCount ? -30 : lost >= roundCount * 0.8 ? -10 : 0;
         let finalScore = score + bonus + penalty;
-        this.stats.push([d(roundCount),d(won),d(lost),d(score),d(bonus),d(penalty),d.bold(finalScore)]);
+        this.stats.push([d(topic),d(roundCount),d(won),d(lost),d(score),d(bonus),d(penalty),d.bold(finalScore)]);
         // lost 100% penalty: -30, lost 80% penalty: 10; won 100% bonus: 30, won 80% bonus 10
         this.totalScore += finalScore;
     },
@@ -392,6 +393,111 @@ const hangman = {
     }
 }
 
+function start(){
+    const welcome = 
+    [
+    ` ██╗    ██╗███████╗██╗      ██████╗ ██████╗ ███╗   ███╗███████╗`,
+    ` ██║    ██║██╔════╝██║     ██╔════╝██╔═══██╗████╗ ████║██╔════╝`,
+    ` ██║ █╗ ██║█████╗  ██║     ██║     ██║   ██║██╔████╔██║█████╗  `,
+    ` ██║███╗██║██╔══╝  ██║     ██║     ██║   ██║██║╚██╔╝██║██╔══╝  `,
+    ` ╚███╔███╔╝███████╗███████╗╚██████╗╚██████╔╝██║ ╚═╝ ██║███████╗`,
+    `  ╚══╝╚══╝ ╚══════╝╚══════╝ ╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚══════╝`
+    ];
+    
+    const to = 
+    [
+    `                      ████████╗ ██████╗ `,
+    `                      ╚══██╔══╝██╔═══██╗`,
+    `                         ██║   ██║   ██║`,
+    `                         ██║   ██║   ██║`,
+    `                         ██║   ╚██████╔╝`,
+    `                         ╚═╝    ╚═════╝ `
+    ];
+    
+    const hm = 
+    [
+    `██╗  ██╗ █████╗ ███╗   ██╗ ██████╗ ███╗   ███╗ █████╗ ███╗   ██╗`,
+    `██║  ██║██╔══██╗████╗  ██║██╔════╝ ████╗ ████║██╔══██╗████╗  ██║`,
+    `███████║███████║██╔██╗ ██║██║  ███╗██╔████╔██║███████║██╔██╗ ██║`,
+    `██╔══██║██╔══██║██║╚██╗██║██║   ██║██║╚██╔╝██║██╔══██║██║╚██╗██║`,
+    `██║  ██║██║  ██║██║ ╚████║╚██████╔╝██║ ╚═╝ ██║██║  ██║██║ ╚████║`,
+    `╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝ ╚═════╝ ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝`
+    ];
+
+    console.log(hm);
+    let arr = [];
+    for (let i = 0; i <= 30; i++) arr.push(" ");
+    let arr2 = [];
+    let arr3 = [];
+    let counter = 0;
+    let counter2 = 0;
+    let counter3 = 0;
+    let text = [];
+    let text2 = [];
+    let text3 = [];
+    let color = gradient("orange", "yellow", "orange").multiline;
+    
+    function welcomeAnimation(){
+        if (arr.length > 0){
+            let item = arr.splice(0,1);
+            if (counter < welcome.length){
+                text.push(welcome[counter]);
+                counter++;
+            }else {
+            arr2.push(item);
+            }
+            clear();
+            console.log(arr.join("\n"));
+            console.log(color(text.join("\n")));
+            console.log(arr2.join("\n"));
+        } else {
+            clearInterval(int);
+            function toAnimation(){
+                if (arr2.length > 0){
+                    let item = arr2.splice(0,1);
+                    if (counter2 < to.length){
+                        text2.push(to[counter2]);
+                        counter2++;
+                    } else {
+                    arr3.push(item);
+                    }
+                    clear();
+                    console.log(arr.join("\n"));
+                    console.log(color(text.join("\n")));
+                    console.log(arr2.join("\n"));
+                    console.log(color(text2.join("\n")));
+                    console.log(arr3.join("\n"));
+                } else {
+                    clearInterval(int2);
+                    function hmAnimation(){
+                        if (arr3.length > 0){
+                            arr3.splice(0,1);
+                            if (counter3 < hm.length){
+                                text3.push(hm[counter3]);
+                                counter3++;
+                            }
+                            clear();
+                            console.log(arr.join("\n"));
+                            console.log(color(text.join("\n")));
+                            console.log(arr2.join("\n"));
+                            console.log(color(text2.join("\n")));
+                            console.log(arr3.join("\n"));
+                            console.log(color(text3.join("\n")));
+                        } else {
+                            clearInterval(int3);
+                            const timeout = setTimeout(welcomeUser, 2000);
+                        }
+                    }
+                    const int3 = setInterval(hmAnimation, 50);
+                }
+            }
+            const int2 = setInterval(toAnimation, 50);
+        }
+    }
+    const int = setInterval(welcomeAnimation, 50);
+    
+}
+
 function welcomeUser(){
     clear();
     menu.reset();
@@ -457,8 +563,8 @@ function startGame(){
     newRound();
 }
 
-welcomeUser();
-
+//welcomeUser();
+start();
 
 
 function center(str, width){
