@@ -239,19 +239,19 @@ center(` ┴ └─┘┴  ┴└─┘└─┘`,64)
             return `${chalk.yellowBright("‾".repeat(l))}\n${roundsStr}\n${chalk.yellowBright("_".repeat(l))}`;
         };
         const disHiddenW = () => {
-            let width = 32; // automatisieren?
+            let width = 32; 
             let mask = this.hiddenW.toUpperCase().split("").join(" ");
             let spacing = (width - mask.length) / 2;
             let left = spacing % 2 === 0 ? spacing : Math.floor(spacing);
             let right = spacing % 2 === 0 ? spacing : Math.ceil(spacing);
             return (
-                chalk.green.dim("╔" + "═".repeat(width) + "╗\n" + "║" + " ".repeat(width) + "║\n" + "║" + " ".repeat(left)) +
+                chalk.green.dim("  ╔" + "═".repeat(width) + "╗\n" + "  ║" + " ".repeat(width) + "║\n" + "  ║" + " ".repeat(left)) +
                 chalk.bold.yellowBright(mask) +
-                chalk.green.dim(" ".repeat(right) + "║\n" + "║" + " ".repeat(width) + "║\n" + "╚" + "═".repeat(width) + "╝\n")
+                chalk.green.dim(" ".repeat(right) + "║\n" + "  ║" + " ".repeat(width) + "║\n" + "  ╚" + "═".repeat(width) + "╝\n")
             );
         };
         const disABC = () => {
-            let abcStr = chalk.green(this.abc.slice(0, 9).join(" - ").toUpperCase() + "\n" + this.abc.slice(9, 18).join(" - ").toUpperCase() + "\n    " + this.abc.slice(18, 25).join(" - ").toUpperCase() + "\n");
+            let abcStr = "  " + chalk.green(this.abc.slice(0, 9).join(" - ").toUpperCase() + "\n" + "  " + this.abc.slice(9, 18).join(" - ").toUpperCase() + "\n      " + this.abc.slice(18, 25).join(" - ").toUpperCase() + "\n");
             return abcStr;
         };
         const disHangman = () => {
@@ -571,13 +571,13 @@ function startGame(){
             hangman.rounds[hangman.round] = true;
             hangman.abc = false;
             if (hangman.round < hangman.rounds.length - 1) {
-                hangman.msg = chalk.green("Congrats!\nYou won this round!");
+                hangman.msg = chalk.greenBright("Congrats!\nYou won this round!");
                 hangman.display();
                 rls.keyInPause("Next round > "); // menu-options??
                 hangman.round++;
                 newRound();
             } else {
-                hangman.msg = chalk.green("Congrats!\nYou won this round.\nGames ends now.\n\n")+ chalk.white("Press key to see your stats.\n");
+                hangman.msg = chalk.greenBright("Congrats!\nYou won this round.\nGames ends now.\n\n")+ chalk.white("Press key to see your stats.\n");
                 hangman.display();
                 rls.keyInPause("> "); // menu-options??
                 user.saveStats(hangman.rounds);
@@ -588,13 +588,13 @@ function startGame(){
             hangman.rounds[hangman.round] = false;
             hangman.abc = false;
             if (hangman.round < hangman.rounds.length - 1) {
-                hangman.msg = chalk.red(`You lost this round.\nThe word was ${chalk.white(hangman.currentW.toUpperCase())}.`);
+                hangman.msg = chalk.redBright(`You lost this round.\nThe word was ${chalk.white(hangman.currentW.toUpperCase())}.`);
                 hangman.display();
                 rls.keyInPause("Next round > "); // menu-options??
                 hangman.round++;
                 newRound();
             } else {
-                hangman.msg = chalk.red(`You lost this round.\nThe word was ${chalk.white(hangman.currentW.toUpperCase())}.\nGame ends now.\n\n`) +  chalk.white("Press key to see your stats.\n");
+                hangman.msg = chalk.redBright(`You lost this round.\nThe word was ${chalk.white(hangman.currentW.toUpperCase())}.\nGame ends now.\n\n`) +  chalk.white("Press key to see your stats.\n");
                 hangman.display();
                 rls.keyInPause("> "); // menu-options??
                 user.saveStats(hangman.rounds);
