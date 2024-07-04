@@ -10,7 +10,7 @@ const user = {
     stats: [],
     totalScore : 0,
     resetStats(){
-        const h = chalk.hex('#FFA500'); // table head styling
+        const h = chalk.hex("#FFA500"); // table head styling
         this.stats = new Table({
             head: [h("topic"),h("rounds"),h("won"),h("lost"),h("score"),h("bonus"),h("penalty"),h("final score")]
         });
@@ -108,8 +108,54 @@ const hangman = {
         this.round = 0;
         this.rounds = [];
     },
-    displayTopicsMenu(){
+    displayLogin(){
+        let msg = [
+center(`╔════════════════════════════════════════════════════╗`,64),
+center(`║                                                    ║`,64),
+center(`║   ┬ ┬┬ ┬┌─┐┌┬┐┌─┐  ┬ ┬┌─┐┬ ┬┬─┐  ┌┐┌┌─┐┌┬┐┌─┐┌─┐   ║`,64),
+center(`║   │││├─┤├─┤ │ └─┐  └┬┘│ ││ │├┬┘  │││├─┤│││├┤  ┌┘   ║`,64),
+center(`║   └┴┘┴ ┴┴ ┴ ┴ └─┘   ┴ └─┘└─┘┴└─  ┘└┘┴ ┴┴ ┴└─┘ o    ║`,64),
+center(`║                                                    ║`,64),
+center(`╚════════════════════════════════════════════════════╝`,64)
+];
+        clear();
+        console.log(menu.display());
+        console.log(hangman.title);
+        console.log("\n"+chalk.hex("#FFA500")(msg.join("\n"))+"\n\n");
+        let name = rls.question("> ");
+        menu.check(name);
+        user.name = name[0].toUpperCase() + name.slice(1).toLowerCase();
+    },
+    displayInstr(){
         let greeting = chalk.yellowBright(center(`Hello ${user.name}!`,64))+"\n";
+        let ins = [
+center(`        ╦┌┐┌┌─┐┌┬┐┬─┐┬ ┬┌─┐┌┬┐┬┌─┐┌┐┌┌─┐      `,64),
+center(`╔══════ ║│││└─┐ │ ├┬┘│ ││   │ ││ ││││└─┐ ════╗`,64),
+center(`║       ╩┘└┘└─┘ ┴ ┴└─└─┘└─┘ ┴ ┴└─┘┘└┘└─┘     ║`,64),
+center(`║                                            ║`,64),
+center(`║    1.) Tho goal is to guess the word       ║`,64),
+center(`║        and save the man!                   ║`,64),
+center(`║                                            ║`,64),
+center(`║    2.) You can guess only one letter       ║`,64),
+center(`║        at a time.                          ║`,64),
+center(`║                                            ║`,64),
+center(`║    3.) If you make 7 wrong guesses the     ║`,64),
+center(`║        man will die.                       ║`,64),
+center(`║                                            ║`,64),
+center(`║    4.) You will get a bonus or a penalty   ║`,64),
+center(`║        depending on how many times you     ║`,64),
+center(`║        rescued him or let him die.         ║`,64),
+center(`║                                            ║`,64),
+center(`╚════════════════════════════════════════════╝`,64)
+];
+        clear();
+        console.log(menu.display());
+        console.log(hangman.title);
+        console.log(greeting);
+        console.log(chalk.hex("#FFA500")(ins.join("\n"))+"\n");
+        rls.keyInPause("Start game > "); 
+    },
+    displayTopicsMenu(){
         let topicsStr = "";
         let listCount = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"];
         let list = [];
@@ -126,11 +172,10 @@ const hangman = {
             topicsStr += `${margin}║${paddingLeft}[${chalk.bold.yellowBright(listCount[index])}] ${chalk.white(topic)}${paddingRight}║\n${margin}║${" ".repeat(boxWidth)}║\n`;
         });
         topicsStr += `${margin}╚${"══".repeat(boxWidth/2)}╝`;
-        let message = chalk.yellowBright(center(`Chose a topic! [${list.join(", ")}]`,64)) + "\n"; // center message; not working with chalk inside/ ANSI-Escape Codes...
+        let message = chalk.yellowBright(center(`Chose a topic, ${user.name}! [${list.join(", ")}]`,64)) + "\n"; 
         clear();
         console.log(menu.display());
         console.log(this.title);
-        console.log(greeting);
         console.log(message);
         console.log(topicsStr);
         this.choseTopic(list);
@@ -493,12 +538,14 @@ function welcomeUser(){
     clear();
     menu.reset();
     user.resetStats();
-    console.log(menu.display());
+    hangman.displayLogin();
+    hangman.displayInstr();
+/*     console.log(menu.display());
     console.log(hangman.title);
     console.log(`Welcome!\nWhat's your name?`);
     let name = rls.question("> ");
     menu.check(name);
-    user.name = name[0].toUpperCase() + name.slice(1).toLowerCase();
+    user.name = name[0].toUpperCase() + name.slice(1).toLowerCase(); */
     startGame();
 }
 
@@ -543,7 +590,7 @@ function startGame(){
                 hangman.round++;
                 newRound();
             } else {
-                hangman.msg = chalk.red("You lost this round.\nThe word was ${chalk.white(hangman.currentW.toUpperCase())}.\nGame ends now.\n\n")+ chalk.white("Press key to see your stats.\n");
+                hangman.msg = chalk.red(`You lost this round.\nThe word was ${chalk.white(hangman.currentW.toUpperCase())}.\nGame ends now.\n\n`) +  chalk.white("Press key to see your stats.\n");
                 hangman.display();
                 rls.keyInPause("> "); // menu-options??
                 user.saveStats(hangman.rounds);
