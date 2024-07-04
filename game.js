@@ -156,28 +156,34 @@ center(`╚═══════════════════════
         rls.keyInPause("Start game > "); 
     },
     displayTopicsMenu(){
+        let heading = 
+[
+center(`┌┬┐┌─┐┌─┐┬┌─┐┌─┐`,64),
+center(` │ │ │├─┘││  └─┐`,64),
+center(` ┴ └─┘┴  ┴└─┘└─┘`,64)
+];
         let topicsStr = "";
         let listCount = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"];
         let list = [];
         let boxWidth = 40;
-        let margin = " ".repeat(Math.floor((64-boxWidth-2) / 2));
         let lwl = this.topics.reduce((acc,str) => acc.length > str.length ? acc : str).length; // length of longest word in list
         let l = Math.floor((boxWidth-lwl-4)/2);
         let paddingLeft = " ".repeat(l);
-        topicsStr = `${margin}╔${"══".repeat(boxWidth/2)}╗\n${margin}║${" ".repeat(boxWidth)}║\n`;
+        topicsStr = center(`╔${"══".repeat(boxWidth/2)}╗`,64) + "\n" + center(`║${" ".repeat(boxWidth)}║`,64) + "\n";
         this.topics.map((topic, index)=>{
             list.push(listCount[index]);
             let r = boxWidth-topic.length-4-l;
             let paddingRight = " ".repeat(r);
-            topicsStr += `${margin}║${paddingLeft}[${chalk.bold.yellowBright(listCount[index])}] ${chalk.white(topic)}${paddingRight}║\n${margin}║${" ".repeat(boxWidth)}║\n`;
+            topicsStr += center(`║${paddingLeft}[${listCount[index]}] ${topic}${paddingRight}║`,64)+ "\n" + center(`║${" ".repeat(boxWidth)}║`,64)+ "\n";
         });
-        topicsStr += `${margin}╚${"══".repeat(boxWidth/2)}╝`;
+        topicsStr += center(`╚${"══".repeat(boxWidth/2)}╝`,64);
         let message = chalk.yellowBright(center(`Chose a topic, ${user.name}! [${list.join(", ")}]`,64)) + "\n"; 
         clear();
         console.log(menu.display());
         console.log(this.title);
         console.log(message);
-        console.log(topicsStr);
+        console.log(chalk.hex("#FFA500")(heading.join("\n")));
+        console.log(chalk.hex("#FFA500")(topicsStr));
         this.choseTopic(list);
     },
     choseTopic(list){
@@ -432,11 +438,6 @@ center(`╚═══════════════════════
         console.log(menu.display());
         console.log(this.title);
         console.log(output);
-/*         console.log(disTopic());
-        console.log(disRounds());
-        console.log(disHiddenW());
-        console.log(disABC());
-        console.log(disHangman()); */
 
     },
     checkWord(choice){
@@ -540,12 +541,6 @@ function welcomeUser(){
     user.resetStats();
     hangman.displayLogin();
     hangman.displayInstr();
-/*     console.log(menu.display());
-    console.log(hangman.title);
-    console.log(`Welcome!\nWhat's your name?`);
-    let name = rls.question("> ");
-    menu.check(name);
-    user.name = name[0].toUpperCase() + name.slice(1).toLowerCase(); */
     startGame();
 }
 
