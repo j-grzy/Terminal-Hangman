@@ -9,4 +9,6 @@ A small hangman-game for the terminal. At least for **some** terminals. ;)
 
     ```node game.js ```
 
+If everything works correctly, the game should look like this:
 
+![Screenshot](<screenshot.png>)
