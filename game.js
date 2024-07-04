@@ -8,13 +8,13 @@ import Table from "cli-table";
 const user = {
     name: "",
     stats: [],
-    totalScore : 0,
+    finalScore : 0,
     resetStats(){
         const h = chalk.hex("#FFA500"); // table head styling
         this.stats = new Table({
-            head: [h("topic"),h("rounds"),h("won"),h("lost"),h("score"),h("bonus"),h("penalty"),h("final score")]
+            head: [h(" topic "),h("rounds"),h(" won "),h(" lost "),h(" sum "),h("bonus"),h("penalty"),h(" score ")]
         });
-        this.totalScore = 0;
+        this.finalScore = 0;
     },
     saveStats(rounds){
         const d = chalk.yellowBright; // table data styling
@@ -22,20 +22,20 @@ const user = {
         let roundCount = rounds.length;
         let won = rounds.filter((item) => item).length;
         let lost = rounds.filter((item)=> !item).length;
-        let score = won*10 - lost*10;
+        let sum = won*10 - lost*10;
         let bonus = won === roundCount ? 30 : won >= roundCount * 0.8 ? 10 : 0;
         let penalty = lost === roundCount ? -30 : lost >= roundCount * 0.8 ? -10 : 0;
-        let finalScore = score + bonus + penalty;
-        this.stats.push([d(topic),d(roundCount),d(won),d(lost),d(score),d(bonus),d(penalty),d.bold(finalScore)]);
+        let score = sum + bonus + penalty;
+        this.stats.push([d(topic),d(roundCount),d(won),d(lost),d(sum),d(bonus),d(penalty),d.bold(score)]);
         // lost 100% penalty: -30, lost 80% penalty: 10; won 100% bonus: 30, won 80% bonus 10
-        this.totalScore += finalScore;
+        this.finalScore += score;
     },
     displayStats(){
         clear();
         console.log(menu.display());
         console.log(hangman.title);
         console.log(this.stats.toString());
-        console.log("\n\n"+chalk.yellowBright(center(`Total Score: ${this.totalScore}`,64))+"\n");
+        console.log("\n\n"+chalk.yellowBright(center(`${user.name}'s Final Score: ${this.finalScore}`,64))+"\n");
         console.log("\nPress [" + chalk.yellowBright("0") + "] to quit game or [" + chalk.yellowBright("1") + "] to play again.\n");
         let choice = rls.keyIn("> ", {limit: ["0","1"]});
         menu.check(choice);
@@ -531,16 +531,16 @@ function start(){
                             console.log(color(text3.join("\n")));
                         } else {
                             clearInterval(int3);
-                            const timeout = setTimeout(welcomeUser, 2000);
+                            const timeout = setTimeout(welcomeUser, 1500);
                         }
                     }
-                    const int3 = setInterval(hmAnimation, 50);
+                    const int3 = setInterval(hmAnimation, 40);
                 }
             }
-            const int2 = setInterval(toAnimation, 50);
+            const int2 = setInterval(toAnimation, 40);
         }
     }
-    const int = setInterval(welcomeAnimation, 50);
+    const int = setInterval(welcomeAnimation, 40);
     
 }
 
