@@ -416,7 +416,7 @@ center(` ┴ └─┘┴  ┴└─┘└─┘`,64)
                     [chalk.hex("#993300")`   ▐█▛       ▟█▛     `,chalk.white.bold(`│`)].join(""),
                     [chalk.hex("#993300")`   ▐█      ▟█▛       `,chalk.white.bold(`│`)].join(""),
                     [chalk.hex("#993300")`   ▐█    ▟█▛         `,chalk.white(`⌡`),chalk.bold.yellowBright(`__`)].join(""),
-                    [chalk.hex("#993300")`   ▐█  ▟█▛          `,chalk.bold.yellowBright(`╱ ✕✕╲`)].join(""), 
+                    [chalk.hex("#993300")`   ▐█  ▟█▛          `,chalk.bold.yellowBright(`╱ ₓₓ╲`)].join(""), 
                     [chalk.hex("#993300")`   ▐█▟█▛            `,chalk.bold.yellowBright(`╲ ~ ╱`)].join(""),
                     [chalk.hex("#993300")`   ▐█▛              `,chalk.yellowBright(`⌠▔▔▔ `)].join(""),
                     [chalk.hex("#993300")`   ▐█              `,chalk.yellowBright(`╱│╲`)].join(""),
