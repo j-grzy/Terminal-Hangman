@@ -609,6 +609,6 @@ start();
 
 
 function center(str, width){
-    let margin = " ".repeat(Math.floor((width-str.length) / 2));
+    let margin = str.length < width ? " ".repeat(Math.floor((width-str.length) / 2)) : "";
     return `${margin}${str}`;
 }
